@@ -14,15 +14,10 @@ if (!(condition)){                                           \
 #define StackCheck(Stack) \
     StackCheckFunc(Stack, #Stack, __FILE__, __LINE__, __PRETTY_FUNCTION__)
 
-
+//const char* NAME_LOG_FILE = "log.txt";
 
 typedef int Elem_t;
-
-enum ResizeMode 
-{
-    UP = 0,
-    DOWN = 1
-};
+extern FILE* LogFile;
 
 struct stk
 {
@@ -31,10 +26,27 @@ struct stk
     size_t capacity = 0;
 };
 
+enum ResizeMode 
+{
+    UP = 0,
+    DOWN = 1
+};
+
+enum StackCodeError
+{
+    STACK_OK                 = 0,
+    STACK_DESTRUCT           = 1,
+    STACK_DATA_NULL          = 2,
+    STACK_SIZE_LESS_0        = 3,
+    STACK_SIZE_MORE_CAPACITY = 4
+};
+
 const size_t DESTRUCT_DATA = 0x66DEAD66;
 const long DESTRUCT_SIZE = 0x66DEAD66;
 const size_t DESTRUCT_CAPACITY = 0x66DEAD66;
+
 const size_t BASE_CAPACITY = 10;
+
 
 void StackCtor(stk*, size_t);
 
@@ -48,4 +60,10 @@ void StackDtor(stk*);
 
 int StackCheckFunc(stk, const char*, char*, int, const char*);
 
-void StackDumpFunc(stk*, size_t, const char , const char);
+FILE* StartLog(void);
+
+void FinishLog();
+
+void StackDumpFunc(stk*, const char*, const char* , size_t, const char*, StackCodeError);
+
+void PrintError(StackCodeError);
