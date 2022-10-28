@@ -92,8 +92,10 @@ int StackCheckFunc(stk st,const char* name, char* file, int line, const char* fu
     fprintf(stdout, "Error in: %s is destructed:\n"                          
                     "FILE: %s\n"                               
                     "LINE: %d\n"                                
-                    "FUNCTION: %s\n",                            
+                    "FUNCTION: %s\n"
+                    "StackDump!!!\n",                            
             name, file, line, func);  
+    StackDumpFunc(&st, name, file, line, func, STACK_DESTRUCT);
     abort();
     }
     else if (st.data == NULL)
@@ -101,8 +103,10 @@ int StackCheckFunc(stk st,const char* name, char* file, int line, const char* fu
     fprintf(stdout, "Error in %s.data == NULL:\n"                          
                     "FILE: %s\n"                               
                     "LINE: %d\n"                                
-                    "FUNCTION: %s\n",                            
+                    "FUNCTION: %s\n"
+                    "StackDump!!!\n",                            
             name, file, line, func);  
+    StackDumpFunc(&st, name, file, line, func, STACK_DATA_NULL);
     abort();
     }
     else if (st.size < 0)
@@ -121,8 +125,10 @@ int StackCheckFunc(stk st,const char* name, char* file, int line, const char* fu
     fprintf(stdout, "Error in %s.size >= st.capacity:\n"                          
                     "FILE: %s\n"                               
                     "LINE: %d\n"                                
-                    "FUNCTION: %s\n",                            
+                    "FUNCTION: %s\n"
+                    "StackDump!!!\n",                            
             name, file, line, func);  
+    StackDumpFunc(&st, name, file, line, func, STACK_SIZE_MORE_CAPACITY);
     abort();
     }
 }

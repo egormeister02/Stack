@@ -11,10 +11,10 @@ int main()
     
     Push(&st, 10);
     printf("%d  %d\n",st.capacity, st.size);
-    st.size = -1;
-    Pop(&st);
-    printf("%d  %d\n",st.capacity, st.size);
-    FinishLog();
+    
+    //printf("%d  %d\n",st.capacity, st.size);
+
+
     /*
     for (int i = 0; i < 21; i++) {
         Pop(&st);
@@ -22,6 +22,8 @@ int main()
     }
     */
     StackDtor(&st);
-    
+    Pop(&st);
+
+        FinishLog();
     //printf("%0x\n", DESTRUCT);
 }
