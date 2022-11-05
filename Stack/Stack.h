@@ -17,16 +17,17 @@ if (!(condition)){                                           \
 #define StackDump(Stack) \
     StackDumpFunc(Stack, #Stack, __FILE__, __LINE__, __PRETTY_FUNCTION__, StackCheck(Stack))
 
+
 #define POISON POISON_INT
-
-
+const char NAME_LOG_FILE[] = "log.txt";
 typedef int Elem_t;
+
 extern FILE* LogFile;
 
 struct stk
 {
     Elem_t* data = NULL;
-    long size = 0;
+    size_t size = 0;
     size_t capacity = 0;
 };
 
@@ -39,22 +40,22 @@ enum ResizeMode
 enum StackCodeError
 {
     STACK_OK                 = 0,
-    STACK_DESTRUCT           = 1,
-    STACK_DATA_NULL          = 2,
-    STACK_SIZE_LESS_0        = 3,
-    STACK_SIZE_MORE_CAPACITY = 4
+    STACK_NULL               = 1,
+    STACK_DESTRUCT           = 2,
+    STACK_DATA_NULL          = 3,
+    STACK_SIZE_LESS_0        = 4,
+    STACK_SIZE_MORE_CAPACITY = 5
 };
 
 const size_t DESTRUCT_DATA = 0x66DEAD66;
-const long DESTRUCT_SIZE = 0x66DEAD66;
-const size_t DESTRUCT_CAPACITY = 0x66DEAD66;
-const char NAME_LOG_FILE[] = "log.txt";
+const size_t DESTRUCT_SIZE = 0x77DEAD77;
+const size_t DESTRUCT_CAPACITY = 0x77DEAD77;
 const size_t BASE_CAPACITY = 10;
-const int POISON_INT = 0xDEAD;
-const int POISON_CHAR = 0xFF;
-const int POISON_LONG = 0xAADEADAA;
-const int POISON_FLOAT = 0xFFDEADFF;
-const int POISON_DOUBLE = 0xDDDEADDD;
+const int POISON_INT = 0x7DED;
+const char POISON_CHAR = 127;
+const long POISON_LONG = 0x7ADEADA7;
+const float POISON_FLOAT = 0xFFDEADFF;
+const double POISON_DOUBLE = 0xFFDEADFF;
 const int MAX_SIZE_STR = 40;
 
 

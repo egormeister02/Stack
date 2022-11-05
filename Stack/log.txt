@@ -1,26 +1,7 @@
 --------------------------------Start Logging--------------------------------
 
 ----------------------------------StackDump----------------------------------
-Called at Stack_main.cpp at int main()(18)
-Stack is OK
-{
-    data pointer = 001F0E90
-    size         = 1
-    capacity     = 10
-    {
-	*[0] = 10 
-	 [1] = 57005 (POISON)
-	 [2] = 57005 (POISON)
-	 [3] = 57005 (POISON)
-	 [4] = 57005 (POISON)
-	 [5] = 57005 (POISON)
-	 [6] = 57005 (POISON)
-	 [7] = 57005 (POISON)
-	 [8] = 57005 (POISON)
-	 [9] = 57005 (POISON)
-    }
-}
-
----------------------------------------------------------------------------
+pointer of stk is null
+Called at Stack.cpp at Elem_t Pop(stk*)(29)
 
 ------------------------------Finish Logging-------------------------------
