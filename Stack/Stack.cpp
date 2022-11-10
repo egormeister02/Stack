@@ -2,7 +2,7 @@
 
 void StackCtor(stk* stk, size_t capacity)
 {
-    ASSERT(stk != NULL);
+    if (stk == NULL) StackCheck(stk);
 
     stk->size = 0;
     stk->capacity = (capacity == 0 ? BASE_CAPACITY: capacity);

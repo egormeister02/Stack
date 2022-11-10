@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+/*
 #define ASSERT(condition)                                   \
 if (!(condition)){                                           \
     fprintf(stderr, "Error in %s:\n"                          \
@@ -9,7 +9,7 @@ if (!(condition)){                                           \
                     "LINE: %d\n"                                \
                     "FUNCTION: %s\n",                            \
            #condition, __FILE__, __LINE__, __PRETTY_FUNCTION__);  \
-    abort();}
+    abort();}*/
 
 #define StackCheck(Stack) \
     StackCheckFunc(Stack, #Stack, __FILE__, __LINE__, __PRETTY_FUNCTION__)
