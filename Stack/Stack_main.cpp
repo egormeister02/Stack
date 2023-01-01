@@ -1,25 +1,30 @@
 #include "Stack.h"
 
-FILE* LogFile = StartLog();
-
 int main()
 {
     
+    
+    if (LogStack == NULL)
+        printf("no logstack");
+    
+    stk* stk = NULL;
     struct stk st;
     StackCtor(&st, 0);
+    stk = &st;
     
-    for (int i = 0; i < 16; i++){
-    Push(&st, 10);
-    Push(&st, 20);
-}
-    
-    Pop(NULL); 
-    Pop(&st); 
-    Pop(&st); 
-    
-    StackDump(&st);
-    StackDtor(&st);
+    for (int i = 0; i < 11; i++){
+    Push(stk, 10);}
+
+
+LEFT_CANNARY(stk) = 0;
+Push(stk, 10);
+Push(stk, 10);
+Push(stk, 10);
+     //StackDump(stk);
+
+   //StackDump(stk);
+    StackDtor(stk);
     FinishLog();
-    
+     
     //printf("%0x\n", DESTRUCT);
 }
