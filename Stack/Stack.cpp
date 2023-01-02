@@ -20,6 +20,10 @@ void StackCtor(stk* stk, size_t capacity)
 
     StackPoison(stk);
 
+#if HASH_GUARD
+    stk->hash = HashFunc(stk);
+#endif
+
     StackCheck(stk);
 }
 
@@ -33,6 +37,10 @@ void Push(stk* stk, Elem_t val)
 
     stk->data[stk->size++] = val;
 
+#if HASH_GUARD
+    stk->hash = HashFunc(stk);
+#endif
+
     StackCheck(stk);
 }
 
@@ -43,6 +51,10 @@ Elem_t Pop(stk* stk)
 
     Elem_t value = stk->data[--stk->size];
     stk->data[stk->size] = POISON;
+
+#if HASH_GUARD
+    stk->hash = HashFunc(stk);
+#endif
 
     StackResize(stk, DOWN);
 
@@ -91,6 +103,10 @@ void StackResize(stk* stk, ResizeMode mode)
     
     StackPoison(stk);
 
+#if HASH_GUARD
+    stk->hash = HashFunc(stk);
+#endif
+
     StackCheck(stk);
 }
 
@@ -121,6 +137,19 @@ StackCodeError StackCheckFunc(const stk* st,const char name[MAX_SIZE_STR],
     StackDumpFunc(st, name, file, line, func, STACK_DESTRUCT);
     //FinishLog();
     return STACK_DESTRUCT;
+    }
+
+    else if (st->buf == NULL)
+    {                                           
+    fprintf(stdout, "Error in %s->buf == NULL:\n"                          
+                    "FILE: %s\n"                               
+                    "LINE: %d\n"                                
+                    "FUNCTION: %s\n"
+                    "StackDump!!!\n",                            
+            name, file, line, func);  
+    StackDumpFunc(st, name, file, line, func, STACK_DATA_NULL);
+    //FinishLog();
+    return STACK_DATA_NULL;
     }
 #if CANNARY_GUARD
     else if (st->left_cannary != CANNARY)
@@ -172,18 +201,20 @@ StackCodeError StackCheckFunc(const stk* st,const char name[MAX_SIZE_STR],
     return STACK_RIGHT_CANN;
     }
 #endif
-    else if (st->buf == NULL)
+#if HASH_GUARD
+    else if (st->hash != HashFunc(st))
     {                                           
-    fprintf(stdout, "Error in %s->buf == NULL:\n"                          
+    fprintf(stdout, "Error in %s: invalid hash\n"                          
                     "FILE: %s\n"                               
                     "LINE: %d\n"                                
                     "FUNCTION: %s\n"
                     "StackDump!!!\n",                            
             name, file, line, func);  
-    StackDumpFunc(st, name, file, line, func, STACK_DATA_NULL);
+    StackDumpFunc(st, name, file, line, func, STACK_WRONG_HASH);
     //FinishLog();
-    return STACK_DATA_NULL;
+    return STACK_WRONG_HASH;
     }
+#endif
     else if ((long)st->size < 0)
     {                                           
     fprintf(stdout, "Error in %s->size < 0:\n"                          
@@ -243,10 +274,14 @@ void StackDumpFunc(const stk* stk, const char StackName[MAX_SIZE_STR], const cha
     PrintError(err);
 
 #if CANNARY_GUARD
-    fprintf(LogStack, "\n    CANNARY = %llX\n\n", CANNARY);
+    fprintf(LogStack, "\n    CANNARY = %llX\n", CANNARY);
+#endif
+
+#if HASH_GUARD
+    fprintf(LogStack, "\n    HashFunc value = %lld\n\n", HashFunc(stk));
 #endif
     
-    fprintf(LogStack, "{\n    ---------------------------------------\n");
+    fprintf(LogStack, "{\n\n    ---------------------------------------\n");
 
 #if CANNARY_GUARD
     fprintf(LogStack, "    left struct cannary  = %llX\n\n", stk->left_cannary);
@@ -255,6 +290,10 @@ void StackDumpFunc(const stk* stk, const char StackName[MAX_SIZE_STR], const cha
     fprintf(LogStack, "    data pointer         = %p\n", stk->data);    
     fprintf(LogStack, "    size                 = %llu\n", stk->size);
     fprintf(LogStack, "    capacity             = %llu\n", stk->capacity); 
+
+#if HASH_GUARD
+    fprintf(LogStack, "    hash                 = %llu\n", stk->hash); 
+#endif
 
 #if CANNARY_GUARD
     fprintf(LogStack, "\n    right struct cannary = %llX\n", stk->right_cannary);
@@ -329,6 +368,9 @@ void PrintError(const StackCodeError err)
     case STACK_STRUCT_RIGHT_CANN:
         fprintf(LogStack, "!!!__RIGHT STRUCT CANNARY DEAD__!!!\n");
         break;
+    case STACK_WRONG_HASH:
+        fprintf(LogStack, "!!!__HASH DOESN'T MATCH WITH HASH_FUNC VALUE__!!!\n");
+        break;
     
     default: break;
     }
@@ -336,7 +378,19 @@ void PrintError(const StackCodeError err)
 
 void StackPoison(stk* stk)
 {
-    StackCheck(stk);
-    for (int i = (long)stk->size; i < (long)stk->capacity; i++)
+    for (size_t i = stk->size; i < stk->capacity; i++)
         stk->data[i] = POISON;
 }
+
+#if HASH_GUARD
+    size_t HashFunc(const stk* stk)
+    {
+        size_t s = 0;
+        for (size_t i = 0; i < stk->capacity; i++)
+        {
+            s += (((long long)stk->data[i] / ((i+1)*5 % 43 + 1)) + (((long long)stk->data[i]) % ((i+1)*5 % 23 + 1))*((i+1) % 29));
+            s = s % 4147483647;
+        }
+        return s;
+    }
+#endif

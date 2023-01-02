@@ -12,17 +12,17 @@ int main()
     StackCtor(&st, 0);
     stk = &st;
     
-    for (int i = 0; i < 11; i++){
+    for (int i = 0; i < 111; i++){
     Push(stk, 10);}
 
 
-LEFT_CANNARY(stk) = 0;
+//LEFT_CANNARY(stk) = 0;
 Push(stk, 10);
 Push(stk, 10);
 Push(stk, 10);
      //StackDump(stk);
 
-   //StackDump(stk);
+   StackDump(stk);
     StackDtor(stk);
     FinishLog();
      

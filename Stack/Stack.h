@@ -19,7 +19,7 @@
         return
 
 #define StackDump(Stack) \
-    StackDumpFunc(Stack, #Stack, __FILE__, __LINE__, __PRETTY_FUNCTION__, StackCheck(Stack)) 
+    StackDumpFunc(Stack, #Stack, __FILE__, __LINE__, __PRETTY_FUNCTION__, StackCheckFunc(Stack, #Stack, __FILE__, __LINE__, __PRETTY_FUNCTION__)) 
 
 extern FILE* LogStack;
 
@@ -46,7 +46,8 @@ enum StackCodeError
     STACK_LEFT_CANN          = 6,
     STACK_RIGHT_CANN         = 7,
     STACK_STRUCT_LEFT_CANN   = 8,
-    STACK_STRUCT_RIGHT_CANN  = 9
+    STACK_STRUCT_RIGHT_CANN  = 9,
+    STACK_WRONG_HASH         = 10
 };
 
 struct stk
@@ -60,6 +61,10 @@ struct stk
     size_t  size       =         0;
     size_t  capacity   =         0;
     StackCodeError err =  STACK_OK;
+
+#if HASH_GUARD
+    size_t hash = 0;
+#endif
 
 #if CANNARY_GUARD
     size_t right_cannary = 0;
@@ -77,6 +82,7 @@ const char   POISON_CHAR       =        127;
 const long   POISON_LONG       = 0x7ADEADA7;
 const float  POISON_FLOAT      =   0xFDEADF;
 const double POISON_DOUBLE     = 0xFFDEADFF;
+const size_t HASH_MOD          = 2147483647;
 const int    MAX_SIZE_STR      =         40;
 
 
@@ -103,3 +109,7 @@ void StackDumpFunc(const stk* stk, const char StackName[MAX_SIZE_STR], const cha
 void PrintError(const StackCodeError);
 
 void StackPoison(stk*);
+
+#if HASH_GUARD
+    size_t HashFunc(const stk*);
+#endif
